@@ -1,0 +1,75 @@
+name: app
+description: A new Flutter project.
+
+
+
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: "3.5.4"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_bloc:
+  google_mobile_ads:
+  webview_flutter:
+  firebase_core:
+  firebase_auth:
+  firebase_crashlytics:
+  connectivity_plus:
+  equatable:
+  flutter_screenutil:
+  fluttertoast:
+  google_sign_in:
+  device_info_plus:
+  cloud_firestore:
+  shared_preferences:
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+
+
+
+flutter:
+
+  
+  uses-material-design: true
+
+  
+  assets:
+    - assets/icons/
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

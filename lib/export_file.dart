@@ -1,0 +1,88 @@
+export 'package:flutter/material.dart';
+export 'dart:async';
+export 'package:connectivity_plus/connectivity_plus.dart';
+export 'package:equatable/equatable.dart';
+export 'package:flutter/services.dart';
+export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:app/core/utils/bloc_providers/bloc_providers.dart';
+export 'package:flutter_screenutil/flutter_screenutil.dart';
+export 'package:app/main.dart';
+export 'package:shared_preferences/shared_preferences.dart';
+export 'package:provider/single_child_widget.dart';
+export 'dart:io';
+export 'dart:math';
+
+export 'package:device_info_plus/device_info_plus.dart';
+/*----------------------values -------------------------*/
+
+export 'package:app/core/utils/widgets/dimens.dart';
+export 'package:app/core/utils/values/textStyles.dart';
+export 'package:app/constants.dart';
+export 'package:app/core/utils/assets/app_strings.dart';
+export 'package:app/core/utils/widgets/validator.dart';
+
+/*----------------------widgets------------------------------*/
+export 'package:app/customWidgets.dart' hide ranks;
+
+export 'package:app/core/utils/widgets/text_view.dart';
+export 'package:app/core/utils/widgets/custom_textfield.dart';
+export 'package:app/core/utils/assets/image_assets.dart';
+export 'package:app/core/utils/widgets/asset_image.dart';
+export 'package:app/core/utils/widgets/button_widget.dart';
+export 'package:app/core/utils/widgets/toast.dart';
+/*--------------------dialogs----------------------------*/
+export 'package:app/core/utils/dialogs/bet_dialog.dart';
+export 'package:app/core/utils/dialogs/player_turn_dialog.dart';
+export 'package:app/core/utils/dialogs/result_dialog.dart';
+export 'package:app/core/utils/dialogs/start_dialog.dart';
+export 'package:app/core/utils/dialogs/game_mode_dialog.dart';
+
+/*--------------------fireabse-----------------------------*/
+
+export 'package:firebase_core/firebase_core.dart';
+export 'package:firebase_auth/firebase_auth.dart';
+export 'package:firebase_crashlytics/firebase_crashlytics.dart';
+export 'package:cloud_firestore/cloud_firestore.dart';
+
+/*------------------Splash Bloc --------------------*/
+export 'package:app/app/modules/splash/bloc/splash_bloc.dart';
+export 'package:app/app/modules/splash/bloc/splash_event.dart';
+export 'package:app/app/modules/splash/bloc/splash_state.dart';
+
+/*--------------------Login bloc------------------------*/
+
+export 'package:app/app/modules/authentication/login_bloc/login_events.dart';
+export 'package:app/app/modules/authentication/login_bloc/login_states.dart';
+
+/*--------------------routes----------------------------*/
+export 'package:app/routes/route_name.dart';
+export 'package:app/routes/routes.dart';
+export 'package:app/app/modules/splash/screen/splash_screen.dart';
+export 'app/modules/games/screens/play_blackjack_screen.dart';
+export 'package:app/app/modules/authentication/screens/login_screen.dart';
+export 'package:app/app/modules/settings/screen/settings_screen.dart';
+export 'package:app/app/modules/games/screens/slot_machine_game_screen.dart';
+
+/*---------------------Login------------------------*/
+export 'package:app/app/modules/authentication/firebase_auth_gate/firebase_auth_gate.dart';
+export 'package:app/app/modules/authentication/login_bloc/login_bloc.dart';
+
+/*---------------remote-------------------------------*/
+export 'package:app/data/remote_service/api_provider.dart';
+
+/*-------------------------models-----------------------------------*/
+export 'package:app/app/modules/authentication/model/response_model/user_data_model.dart';
+export 'package:app/app/modules/authentication/model/request_model/auth_request_model.dart';
+
+/*--------------------------settings bloc----------------------------*/
+export 'package:app/app/modules/settings/setting_bloc/settings_bloc.dart';
+export 'package:app/app/modules/settings/setting_bloc/settings_event.dart';
+export 'package:app/app/modules/settings/setting_bloc/settings_state.dart';
+
+/*---------------------games bloc-------------------------*/
+export 'package:app/app/modules/games/bloc/gameController.dart';
+export 'package:app/app/modules/games/bloc/gameEvents.dart';
+export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_event.dart';
+export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_state.dart';
+export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_bloc.dart';
+
