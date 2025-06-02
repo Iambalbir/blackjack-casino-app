@@ -52,12 +52,10 @@ TextStyle textStyleLabelSmall(BuildContext context) =>
     Theme.of(context).textTheme.labelSmall!.copyWith();
 
 TextStyle textStyleBodyLarge(BuildContext context) =>
-    Theme.of(context).textTheme.bodyLarge!.copyWith();
+    Theme.of(context).textTheme.bodyLarge!;
 
-TextStyle textStyleBodyMedium(BuildContext context) => Theme.of(context)
-    .textTheme
-    .bodyMedium!
-    .copyWith( decorationColor: Colors.black);
+TextStyle textStyleBodyMedium(BuildContext context) =>
+    Theme.of(context).textTheme.bodyMedium!.copyWith();
 
 TextStyle textStyleBodySmall(BuildContext context) =>
     Theme.of(context).textTheme.bodySmall!.copyWith();

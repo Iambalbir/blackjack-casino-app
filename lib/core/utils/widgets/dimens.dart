@@ -138,6 +138,7 @@ double width_21 = 21.0.w;
 double width_22 = 22.0.w;
 double width_23 = 23.0.w;
 double width_25 = 25.0.w;
+double width_27 = 27.0.w;
 double width_28 = 28.0.w;
 double width_30 = 30.0.w;
 double width_33 = 33.0.w;

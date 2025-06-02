@@ -19,9 +19,8 @@ String kBetDialog = 'betDialog';
 String kPlayerTurnDialog = 'playDialog';
 String kResultDialog = 'resultDialog';
 
-
-const String TYPE_SINGLE ="single";
-const String TYPE_MULTI ="Multi";
+const String TYPE_SINGLE = "single";
+const String TYPE_MULTI = "Multi";
 
 String kFaceUpCard = 'FaceUpCard';
 String kFaceDownCard = 'FaceDownCard';
@@ -33,3 +32,12 @@ String kDealerWon = 'dealer won';
 String kPlayerWon = 'player won';
 String kTie = 'tie';
 String kSurrender = 'player Surrendered';
+
+const String TYPE_BLACKJACK = "BlackJack";
+const String TYPE_SLOT_MACHINE = "slots";
+const String TYPE_POKER = "Poker";
+
+const String WIN_MESSAGE = "You won! 🎉";
+const String LOOSE_MESSAGE = "Try again!";
+
+const String ALPHA_NUM_CHARS="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

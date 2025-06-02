@@ -1,4 +1,4 @@
-import 'package:app/core/utils/dialogs/logout_dialog.dart';
+import 'package:app/core/utils/dialogs/set_nickname_dialogue.dart';
 
 import '../../../../export_file.dart';
 
@@ -20,6 +20,22 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
+                ListTile(
+                  title: Text('Reset Nickname'),
+                  subtitle: TextView(
+                    text: currentUserModel.nickname ?? 'No nickname set',
+                    textStyle: textStyleBodyMedium(context),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      showNicknameDialog(context, (nickname) {
+                        apiRepository.updateUserNickname(nickname);
+                      });
+                    },
+                  ),
+                ),
+                Divider(),
                 SwitchListTile(
                   title: Text('Sound'),
                   value: state.soundOn,
@@ -34,22 +50,6 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (_) => bloc.add(ToggleTheme()),
                   secondary: Icon(Icons.brightness_6),
                 ),
-                Divider(),
-                if (isGuest) ...[
-                  ListTile(
-                    title: Text('Reset Nickname'),
-                    subtitle: Text(state.nickname ?? 'No nickname set'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: () {
-                        bloc.add(ResetNickname());
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Nickname reset')),
-                        );
-                      },
-                    ),
-                  ),
-                ],
                 Spacer(),
                 ListTile(
                   leading: Icon(Icons.logout),

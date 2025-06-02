@@ -1,5 +1,4 @@
 import 'package:app/app/modules/games/screens/multiplayer_screen.dart';
-import 'package:app/core/utils/dialogs/select_betamount_dialog.dart';
 
 import '../../../../export_file.dart';
 
@@ -26,7 +25,7 @@ class MainScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: height_20),
 
             // Play Games Section
             Expanded(
@@ -42,16 +41,15 @@ class MainScreen extends StatelessWidget {
                           RouteName.playBlackJackScreenRoute,
                         );
                       } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BlackjackGameScreen()),
-                        );
+                        Navigator.pushNamed(
+                            context, RouteName.playersLobbyScreenRoute);
                       }
                     });
                   }),
                   _gameTile(context, "Slots", Icons.casino, () {
                     showBetDialog(context, 0, (amount) {
+                      Navigator.pop(context);
+
                       Navigator.pushNamed(
                           context, RouteName.playSlotMachineScreenRoute,
                           arguments: {"amount": amount});
@@ -67,18 +65,77 @@ class MainScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: height_20),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('rooms')
+                  .where("status", isEqualTo: "active")
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final activeGames = snapshot.data?.docs ?? [];
+                return Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, RouteName.activeGamesScreenRoute);
+                      },
+                      child: TextView(
+                        text:
+                            '🎮 ${activeGames.length} Active Game${activeGames.length == 1 ? '' : 's'}',
+                        textStyle: textStyleBodyMedium(context).copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              },
+            ),
 
             // Other Options
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _bottomOptionTile(
-                    context, "Leaderboard", Icons.leaderboard, '/leaderboard'),
+                _bottomOptionTile(context, "Leaderboard", Icons.leaderboard,
+                    RouteName.leaderBoardScreenRoute),
                 _bottomOptionTile(context, "Settings", Icons.settings,
                     RouteName.settingsScreenRoute),
                 _bottomOptionTile(context, "Wallet",
                     Icons.account_balance_wallet, RouteName.walletScreenRoute),
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("invitations")
+                        .where("to.uid", isEqualTo: currentUserModel.uid)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      dynamic invitationsListing = snapshot.data?.docs ?? [];
+
+                      return _bottomOptionTile(context, "Invitations",
+                          Icons.mail_outline, RouteName.invitationScreenRoute,
+                          countIcon: invitationsListing.length == 0
+                              ? SizedBox()
+                              : Container(
+                                  margin: EdgeInsets.only(bottom: margin_9),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: kBackground,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(margin_4),
+                                    child: TextView(
+                                        text: "${invitationsListing.length}",
+                                        textStyle: textStyleBodyMedium(context)
+                                            .copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold)),
+                                  ),
+                                ));
+                    }),
               ],
             ),
             const SizedBox(height: 10),
@@ -123,14 +180,24 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget _bottomOptionTile(
-      BuildContext context, String label, IconData icon, String routeName) {
+      BuildContext context, String label, IconData icon, String routeName,
+      {countIcon}) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed(routeName),
-      child: Column(
+      onTap: () {
+        apiRepository.checkCurrentUser();
+        Navigator.of(context).pushNamed(routeName);
+      },
+      child: Stack(
+        alignment: Alignment.topRight,
         children: [
-          Icon(icon, size: 30),
-          const SizedBox(height: 4),
-          Text(label, style: const TextStyle(fontSize: 12)),
+          Column(
+            children: [
+              Icon(icon, size: 30),
+              const SizedBox(height: 4),
+              Text(label, style: const TextStyle(fontSize: 12)),
+            ],
+          ),
+          Positioned(top: -5, child: countIcon ?? SizedBox())
         ],
       ),
     );

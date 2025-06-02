@@ -1,6 +1,3 @@
-import 'package:app/app/modules/authentication/screens/login_screen.dart';
-import 'package:app/app/modules/main/views/main_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../export_file.dart';
 
 class UserStateChangeHandlerStream extends StatelessWidget {
@@ -21,6 +18,7 @@ class UserStateChangeHandlerStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    apiRepository.checkCurrentUser();
     return WillPopScope(
       onWillPop: onWillPop,
       child: FutureBuilder<bool>(

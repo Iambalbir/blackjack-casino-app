@@ -1,13 +1,26 @@
 abstract class SlotMachineEvent {}
 
+class InitializeSlotMachine extends SlotMachineEvent {
+  final int initialChips;
+
+  InitializeSlotMachine(this.initialChips);
+}
+
 class SpinReelsEvent extends SlotMachineEvent {
   final int betAmount;
 
   SpinReelsEvent(this.betAmount);
 }
 
-class UpdateBetEvent extends SlotMachineEvent {
-  final int newBet;
+class UpdateBetAmount extends SlotMachineEvent {
+  final int newBetAmount;
 
-  UpdateBetEvent(this.newBet);
+  UpdateBetAmount(this.newBetAmount);
 }
+
+class DoubleBetAmount extends SlotMachineEvent {
+  final int betAmount;
+
+  DoubleBetAmount(this.betAmount);
+}
+class ClearResultMessage extends SlotMachineEvent {}

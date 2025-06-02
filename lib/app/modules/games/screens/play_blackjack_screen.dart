@@ -1,8 +1,6 @@
 import 'package:app/app/modules/games/bloc/adState.dart';
 import 'package:app/app/modules/games/bloc/cardProcessor.dart';
 
-import 'package:app/customWidgets.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../core/utils/widgets/sliding_flipping_widget.dart';

@@ -49,16 +49,16 @@ android {
     }
 
     signingConfigs {
-        release {
+        /*release {
             storePassword 'dodDEVBlackJack987@#'
             keyAlias = 'upload'
             keyPassword 'dodDEVBlackJack987@#'
             storeFile file('upload-keystore.jks')
-        }
+        }*/
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             minifyEnabled = true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

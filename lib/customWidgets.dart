@@ -15,7 +15,7 @@ class FaceDownCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(2.0),
       width: width * 0.2 - 20,
-      height: width * 0.3 - 20,
+      height: height * 0.3 - 20,
       decoration: BoxDecoration(
           color: Colors.black, borderRadius: BorderRadius.circular(12)),
       child: Center(

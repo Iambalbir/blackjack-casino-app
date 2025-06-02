@@ -29,8 +29,8 @@ dependencies:
   device_info_plus:
   cloud_firestore:
   shared_preferences:
-
-
+  device_preview:
+  intl:
 dev_dependencies:
   flutter_test:
     sdk: flutter

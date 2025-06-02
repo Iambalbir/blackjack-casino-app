@@ -6,14 +6,15 @@ export 'package:flutter/services.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:app/core/utils/bloc_providers/bloc_providers.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
-export 'package:app/main.dart';
+export 'package:app/main.dart' hide DeviceType, basicLocaleListResolution;
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:provider/single_child_widget.dart';
 export 'dart:io';
 export 'dart:math';
-
+export 'package:google_sign_in/google_sign_in.dart';
 export 'package:device_info_plus/device_info_plus.dart';
 /*----------------------values -------------------------*/
+export 'package:app/core/utils/values/helper_widget.dart';
 
 export 'package:app/core/utils/widgets/dimens.dart';
 export 'package:app/core/utils/values/textStyles.dart';
@@ -36,6 +37,10 @@ export 'package:app/core/utils/dialogs/player_turn_dialog.dart';
 export 'package:app/core/utils/dialogs/result_dialog.dart';
 export 'package:app/core/utils/dialogs/start_dialog.dart';
 export 'package:app/core/utils/dialogs/game_mode_dialog.dart';
+export 'package:app/core/utils/dialogs/select_betamount_dialog.dart';
+export 'package:app/core/utils/dialogs/loose_dialog.dart';
+export 'package:app/core/utils/dialogs/winning_dialog.dart';
+export 'package:app/core/utils/dialogs/logout_dialog.dart';
 
 /*--------------------fireabse-----------------------------*/
 
@@ -62,7 +67,15 @@ export 'app/modules/games/screens/play_blackjack_screen.dart';
 export 'package:app/app/modules/authentication/screens/login_screen.dart';
 export 'package:app/app/modules/settings/screen/settings_screen.dart';
 export 'package:app/app/modules/games/screens/slot_machine_game_screen.dart';
-
+export 'package:app/app/modules/main/views/main_screen.dart';
+export 'package:app/app/modules/leaderboard/screen/leaderboard_screen.dart';
+export 'package:app/app/modules/lobby/screen/multiplayer_lobby_screen.dart';
+export 'package:app/app/modules/wallet/screens/wallet_screen.dart';
+export 'package:app/app/modules/invitations/screens/invitation_screen.dart';
+export 'package:app/app/modules/lobby/screen/room_create_screen.dart';
+export 'package:app/app/modules/lobby/screen/waiting_room_screen.dart';
+export 'package:app/app/modules/games/screens/active_games.dart';
+export 'package:app/app/modules/games/screens/multiplayer_screen.dart';
 /*---------------------Login------------------------*/
 export 'package:app/app/modules/authentication/firebase_auth_gate/firebase_auth_gate.dart';
 export 'package:app/app/modules/authentication/login_bloc/login_bloc.dart';
@@ -71,8 +84,8 @@ export 'package:app/app/modules/authentication/login_bloc/login_bloc.dart';
 export 'package:app/data/remote_service/api_provider.dart';
 
 /*-------------------------models-----------------------------------*/
-export 'package:app/app/modules/authentication/model/response_model/user_data_model.dart';
 export 'package:app/app/modules/authentication/model/request_model/auth_request_model.dart';
+export 'package:app/data/model/data_model/current_user_data_model.dart';
 
 /*--------------------------settings bloc----------------------------*/
 export 'package:app/app/modules/settings/setting_bloc/settings_bloc.dart';
@@ -85,4 +98,17 @@ export 'package:app/app/modules/games/bloc/gameEvents.dart';
 export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_event.dart';
 export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_state.dart';
 export 'package:app/app/modules/games/bloc/slot_machine_bloc/slotmachine_bloc.dart';
+export 'package:app/app/modules/games/bloc/blackjack_multi_player_bloc/multiplayer_blackjack_event.dart';
+export 'package:app/app/modules/games/bloc/blackjack_multi_player_bloc/multiplayer_blackjack_states.dart';
+export 'package:app/app/modules/games/bloc/blackjack_multi_player_bloc/multiplayer_blackjack_bloc.dart';
 
+/*-----------------------room bloc --------------------------------*/
+export 'package:app/app/modules/lobby/bloc/room_bloc/room_bloc.dart';
+export 'package:app/app/modules/lobby/bloc/room_bloc/room_event.dart';
+export 'package:app/app/modules/lobby/bloc/room_bloc/room_state.dart';
+export 'package:app/app/modules/lobby/bloc/waiting_room_bloc/waiting_room_bloc.dart';
+export 'package:app/app/modules/lobby/bloc/waiting_room_bloc/waiting_room_event.dart';
+export 'package:app/app/modules/lobby/bloc/waiting_room_bloc/waiting_room_state.dart';
+export 'package:app/app/modules/invitations/invitation_bloc/invitation_events.dart';
+export 'package:app/app/modules/invitations/invitation_bloc/invitation_state.dart';
+export 'package:app/app/modules/invitations/invitation_bloc/invitation_bloc.dart';

@@ -7,6 +7,8 @@ void showBetDialog(
 
   showDialog(
     context: context,
+    useRootNavigator: true,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text("Select Bet Amount"),
@@ -50,8 +52,11 @@ void showBetDialog(
             child: Text("Confirm"),
             onPressed: () {
               if (selectedBet != 0) {
-                Navigator.pop(context);
-                onBetSelected(doubleBet ? selectedBet * 2 : selectedBet);
+                if (selectedBet > bankAmount.value) {
+                  showToast("You don't have enough chips");
+                } else {
+                  onBetSelected(doubleBet ? selectedBet * 2 : selectedBet);
+                }
               } else {
                 showToast("Please select an amount");
               }
