@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "602621365384",
+    "project_id": "gambling-app-80e7b",
+    "storage_bucket": "gambling-app-80e7b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602621365384:android:f6add810cb64b9b250233d",
+        "android_client_info": {
+          "package_name": "com.doddev.blackjack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "602621365384-4kvdjfd5rjo5oqh6nnglp3jemefrrvjo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doddev.blackjack",
+            "certificate_hash": "714c320438838a7f5683b2d3b27975a87d30ac35"
+          }
+        },
+        {
+          "client_id": "602621365384-n51kq7pp4tm86uhl476dpq24l059vkk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doddev.blackjack",
+            "certificate_hash": "bf7fbd1b8f748e33ba8fb058d83a4924f99587dc"
+          }
+        },
+        {
+          "client_id": "602621365384-3tnc8jr724h1rgt2u4oegjvu8qje5hs1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaPZ90K5QTukxVO82S8Yr1ChF7LmMn0yU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "602621365384-3tnc8jr724h1rgt2u4oegjvu8qje5hs1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
