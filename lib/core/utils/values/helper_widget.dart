@@ -101,3 +101,11 @@ int calculateHandValue(List<dynamic> cards) {
   }
   return total;
 }
+
+String generateRoomCode() {
+  const chars = ALPHA_NUM_CHARS;
+  final rand = Random();
+  return List.generate(6, (index) => chars[rand.nextInt(chars.length)]).join();
+}
+
+

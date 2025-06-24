@@ -10,6 +10,8 @@ class RoomState {
   String? searchQuery;
   final bool isCreatingRoom;
   final String roomCode;
+  dynamic entryFee;
+  dynamic groupName;
 
   RoomState(
       {required this.allUsers,
@@ -17,16 +19,20 @@ class RoomState {
       required this.isLoading,
       required this.searchQuery,
       required this.isCreatingRoom,
+      required this.groupName,
       required this.roomCode,
+      required this.entryFee,
       required this.selectedUsers});
 
   factory RoomState.initialEvent() {
     return RoomState(
         allUsers: [],
         isLoading: true,
+        entryFee: '',
         isCreatingRoom: true,
         roomCode: '',
         searchQuery: '',
+        groupName: '',
         filteredUsers: [],
         selectedUsers: []);
   }
@@ -35,12 +41,16 @@ class RoomState {
       {allUser,
       filteredUsers,
       selectedUsers,
+      entryFee,
       isCreatingRoom,
+        groupName,
       roomCode,
       searchQuery,
       isLoading}) {
     return RoomState(
         filteredUsers: filteredUsers ?? this.filteredUsers,
+        entryFee: entryFee ?? this.entryFee,
+        groupName: groupName ?? this.groupName,
         allUsers: allUser ?? this.allUsers,
         isCreatingRoom: isCreatingRoom ?? this.isCreatingRoom,
         roomCode: roomCode ?? this.roomCode,

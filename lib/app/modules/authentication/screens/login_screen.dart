@@ -1,4 +1,5 @@
 import 'package:app/export_file.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordFocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   DateTime? currentTime;
+
+  @override
+  void initState() {
+    if (kDebugMode) {
+      emailController.text = "steve@test.in";
+      passwordController.text = "Test@123";
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,22 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         body: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
-            if (emailController.text != state.email) {
-              emailController.text = state.email;
-              emailController.selection =
-                  TextSelection.collapsed(offset: state.email.length);
-            }
-            if (passwordController.text != state.password) {
-              passwordController.text = state.password;
-              passwordController.selection =
-                  TextSelection.collapsed(offset: state.password.length);
-            }
-
-            if (state.isSuccess) {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteName.streamUserStateScreenRoute,
-                (route) => false,
-              );
+            if (state.isSuccess && !state.isSubmitting) {
+              Future.delayed(Duration(seconds: 1)).then((value) {
+                print('this calledasdfffffffffffffff');
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteName.streamUserStateScreenRoute,
+                  (route) => false,
+                );
+              });
             } else if (state.error != null) {
               showToast(state.error!);
               emailController.clear();
@@ -76,16 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 Form(
                   key: formKey,
                   child: Padding(
-                    padding: EdgeInsets.all(margin_10),
+                    padding: EdgeInsets.symmetric(vertical: margin_10),
                     child: Column(
                       children: [
                         BlocBuilder<LoginBloc, LoginState>(
                           builder: (context, state) {
                             return TextFieldWidget(
                               radius: radius_8,
-                              hint: strEnterMobileNumber,
+                              hint: "Enter your email address",
                               textController: emailController,
-                              bgColor: Colors.white,
                               focusNode: emailFocusNode,
                               inputType: TextInputType.emailAddress,
                               onChange: (value) {
@@ -108,13 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               textController: passwordController,
                               maxLength: 20,
                               focusNode: passwordFocusNode,
-                              bgColor: Colors.white,
                               obscureText: state.isPasswordVisible,
                               onChange: (value) {
                                 if (value.isNotEmpty && value[0] == " ") {
                                   passwordController.text = value.trimLeft();
                                 }
-                                // loginBloc.add(PasswordChanged(value));
                               },
                               validate: (value) =>
                                   Validator.validatePassword(value),
@@ -147,7 +146,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         if (!state.isSubmitting) {
                           if (formKey.currentState!.validate()) {
-                            loginBloc.add(LoginSubmitted());
+                            loginBloc.add(LoginSubmitted(
+                                passwordController.text,
+                                emailController.text,
+                                context));
                           }
                         }
                       },
@@ -163,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   buttonText: "Sign in with Google",
                   onPressed: () {
-                    loginBloc.add(GoogleSignInPressed());
+                    loginBloc.add(GoogleSignInPressed(context));
                   },
                 ),
                 SizedBox(height: height_15),
@@ -172,18 +174,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   iconWidget: Icon(Icons.person_outline),
                   buttonText: "Continue as Guest",
                   onPressed: () async {
-                    final guestId =
+                    showToast("Functionality yet to implement");
+                    /* final guestId =
                         "Guest#${DateTime.now().millisecondsSinceEpoch % 10000}";
                     await saveGuestIdLocally(guestId); // see below
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       RouteName.streamUserStateScreenRoute,
                       (route) => false,
-                    );
+                    );*/
                   },
                 ),
                 InkWell(
                   onTap: () {
-                    // Navigate to signup/setup
+                    Navigator.pushNamed(context, RouteName.singUpScreenRoute);
                   },
                   child: Padding(
                     padding: EdgeInsets.all(margin_10),

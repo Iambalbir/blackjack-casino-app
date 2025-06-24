@@ -64,10 +64,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
             minifyEnabled = true
             shrinkResources = true
-
         }
 
     }
@@ -107,4 +107,7 @@ dependencies {
     implementation "com.google.firebase:firebase-bom:33.13.0"
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-crashlytics"
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.stripe:stripe-android:20.42.0'
+
 }

@@ -4,20 +4,23 @@ abstract class MultiPlayerBlackjackEvent {}
 
 class MultiPlayerBlackjackInitialEvent extends MultiPlayerBlackjackEvent {
   Map<String, dynamic> argumentsData;
+  BuildContext context;
 
-  MultiPlayerBlackjackInitialEvent(this.argumentsData);
+  MultiPlayerBlackjackInitialEvent(this.argumentsData, this.context);
 }
 
 class SaveDealingCardToFireStoreEvent extends MultiPlayerBlackjackEvent {
   List<dynamic> playersUid;
+  BuildContext context;
 
-  SaveDealingCardToFireStoreEvent(this.playersUid);
+  SaveDealingCardToFireStoreEvent(this.playersUid,this.context);
 }
 
 class StartGameStreamEvent extends MultiPlayerBlackjackEvent {
   final roomCode;
+  dynamic context;
 
-  StartGameStreamEvent(this.roomCode);
+  StartGameStreamEvent(this.roomCode, {this.context});
 }
 
 class StartDealingEvent extends MultiPlayerBlackjackEvent {}
@@ -34,11 +37,13 @@ class UpdateTurnEvent extends MultiPlayerBlackjackEvent {
   dynamic currentTurn;
   dynamic turnStartTime;
   dynamic turnId;
+  dynamic hostId;
 
   UpdateTurnEvent(
       {required this.currentTurn,
       required this.turnStartTime,
-      required this.turnId});
+      required this.hostId,
+      this.turnId = 1});
 }
 
 class EndTurnEvent extends MultiPlayerBlackjackEvent {}
@@ -83,4 +88,47 @@ class DealerBustedEvent extends MultiPlayerBlackjackEvent {
   final List<List<String>> updatedDealtCards;
 
   DealerBustedEvent(this.updatedDealtCards);
+}
+
+class ResetGameEvent extends MultiPlayerBlackjackEvent {}
+
+class SendChatMessageEvent extends MultiPlayerBlackjackEvent {
+  final String messageText;
+
+  SendChatMessageEvent(this.messageText);
+}
+
+class AddNewMessageDataEventTrigger extends MultiPlayerBlackjackEvent {
+  AddNewMessageDataEventTrigger();
+}
+
+class CheckPlayerStatus extends MultiPlayerBlackjackEvent {
+  dynamic roomCode;
+  dynamic isAppResumed;
+  dynamic playersListing;
+
+  CheckPlayerStatus(
+      {this.roomCode, this.playersListing, this.isAppResumed = false});
+}
+
+class UserOfflineEvent extends MultiPlayerBlackjackEvent {}
+
+class AddBettingAmountEvent extends MultiPlayerBlackjackEvent {
+  dynamic betAmount;
+  dynamic roomCode;
+  dynamic context;
+
+  AddBettingAmountEvent(this.betAmount, this.roomCode, this.context);
+}
+
+class LeaveGameEvent extends MultiPlayerBlackjackEvent {
+  dynamic betAmount;
+
+  LeaveGameEvent(this.betAmount);
+}
+
+class UpdateTimerCompletionStatus extends MultiPlayerBlackjackEvent {
+  final bool isCompleted;
+
+  UpdateTimerCompletionStatus(this.isCompleted);
 }

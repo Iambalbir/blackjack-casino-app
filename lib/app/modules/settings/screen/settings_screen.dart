@@ -30,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
                     icon: Icon(Icons.edit),
                     onPressed: () {
                       showNicknameDialog(context, (nickname) {
-                        apiRepository.updateUserNickname(nickname);
+                        firebaseRepository.updateUserNickname(nickname);
                       });
                     },
                   ),
@@ -68,6 +68,7 @@ class SettingsScreen extends StatelessWidget {
                         context: context,
                         builder: (context) => LogoutDialog(
                           onLogout: () async {
+                            customLoader.show(context);
                             final prefs = await SharedPreferences.getInstance();
                             await prefs.remove("guest_id");
                             await prefs.setBool(
@@ -77,6 +78,7 @@ class SettingsScreen extends StatelessWidget {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 RouteName.streamUserStateScreenRoute,
                                 (_) => false);
+                            customLoader.hide();
                           },
                           onCancel: () {
                             Navigator.of(context).pop(); // Close the dialog

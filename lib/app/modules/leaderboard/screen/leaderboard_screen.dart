@@ -48,18 +48,26 @@ class LeaderboardScreen extends StatelessWidget {
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
-                        title: Text(
-                          user['nickname'] ?? 'Guest',
-                          style: TextStyle(color: Colors.white),
+                        title: TextView(
+                          text: user['nickname'] ?? 'Guest',
+                          textStyle: textStyleBodyMedium(context).copyWith(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
                           "Wins: ${user['totalWins']} | Losses: ${user['totalLosses']}",
-                          style: TextStyle(color: Colors.grey),
+                          style: textStyleBodyMedium(context).copyWith(
+                              fontSize: font_12,
+                              color: !isCurrentUser
+                                  ? Colors.black87
+                                  : Colors.grey.shade300),
                         ),
                         trailing: Text(
                           "💰 ${user['coins']}",
                           style: TextStyle(
-                              color: Colors.amber, fontWeight: FontWeight.bold),
+                              color: !isCurrentUser
+                                  ? Colors.black87
+                                  : Colors.amber,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     );

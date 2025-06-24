@@ -25,3 +25,36 @@ const String resetPasswordDescription =
     "Your password must consist of at least 8-20 characters, including numbers and a special character, and must not contain spaces or emoji.";
 const String strEnterPassword = "Enter the password";
 const String doubleBackPressed = "Press back again to exit";
+
+const String slotRulesDescription = """
+🎰🎰🎰  SLOT MACHINE GAME RULES  🎰🎰🎰
+
+🎯 Objective
+Spin the reels and match symbols to win prizes.
+The more symbols you match, the higher your payout!
+
+💰 Placing Bets
+Choose your bet amount based on your chip balance.
+Minimum and maximum bet limits are shown on the screen.
+
+🔄 Spinning the Reels
+Tap the “SPIN” button to begin.
+The reels will spin and stop, showing your result.
+
+🏆 Winning Combinations
+Match 3 or more symbols in a row to win.
+Check the Paytable for symbol payouts and rewards.
+
+📉 Winning & Losing
+If you win, your reward is added to your chip balance.
+If you lose, your bet amount is deducted.
+
+🔁 Rebetting
+You can replay with the same bet or adjust it before spinning again.
+
+🚪 Exit the Game
+You can exit anytime.
+⚠️ If you leave during a spin, a penalty may apply.
+
+🎉 Enjoy the game and play responsibly! Good luck! 🍀
+""";

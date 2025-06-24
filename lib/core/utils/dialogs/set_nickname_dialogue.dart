@@ -28,6 +28,7 @@ void showNicknameDialog(BuildContext context, Function(String) onSave) {
                     SizedBox(height: height_16),
                     TextFieldWidget(
                       textController: _controller,
+                      textColor: kBlack,
                       radius: radius_5,
                       validate: (value) =>
                           FieldChecker.fieldChecker(value, "Nickname"),

@@ -12,14 +12,16 @@ class UserDataModel {
   dynamic coins;
   dynamic totalWins;
   dynamic totalLosses;
+  dynamic stripeCustomerId;
   dynamic totalGames;
   dynamic leaderboardScore;
   Map<String, GamePlayedStats>? gamesPlayed;
- dynamic createdAt;
- dynamic lastLogin;
- dynamic deviceName;
- dynamic deviceID;
- dynamic deviceVersion;
+  dynamic createdAt;
+  dynamic lastLogin;
+  dynamic deviceName;
+  dynamic deviceID;
+  dynamic deviceVersion;
+  dynamic betAmount;
 
   UserDataModel({
     this.uid,
@@ -27,6 +29,8 @@ class UserDataModel {
     this.lastName,
     this.email,
     this.photoURL,
+    this.betAmount,
+    this.stripeCustomerId,
     this.authProvider,
     this.nickname,
     this.isGuest,
@@ -46,8 +50,10 @@ class UserDataModel {
   UserDataModel.fromJson(Map<String, dynamic> data) {
     uid = data['uid'];
     firstName = data['firstName'] ?? '';
+    stripeCustomerId = data['stripeCustomerId'] ?? '';
     lastName = data['lastName'] ?? '';
     email = data['email'] ?? '';
+    betAmount = data['betAmount'] ?? 0.0;
     photoURL = data['photoURL'] ?? '';
     authProvider = data['authProvider'] ?? 'unknown';
     nickname = data['nickname'] ?? '';
@@ -61,7 +67,8 @@ class UserDataModel {
     final rawGames = data['gamesPlayed'] as Map<String, dynamic>? ?? {};
     gamesPlayed = {};
     rawGames.forEach((key, value) {
-      gamesPlayed![key] = GamePlayedStats.fromJson(Map<String, dynamic>.from(value));
+      gamesPlayed![key] =
+          GamePlayedStats.fromJson(Map<String, dynamic>.from(value));
     });
 
     createdAt = data['createdAt'];
@@ -81,12 +88,15 @@ class UserDataModel {
       'authProvider': authProvider,
       'nickname': nickname,
       'isGuest': isGuest,
+      'betAmount': betAmount,
       'coins': coins,
       'totalWins': totalWins,
+      'stripeCustomerId': stripeCustomerId,
       'totalLosses': totalLosses,
       'totalGames': totalGames,
       'leaderboardScore': leaderboardScore,
-      'gamesPlayed': gamesPlayed?.map((key, value) => MapEntry(key, value.toJson())),
+      'gamesPlayed':
+          gamesPlayed?.map((key, value) => MapEntry(key, value.toJson())),
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
       'lastLogin': lastLogin ?? FieldValue.serverTimestamp(),
       'deviceName': deviceName,
@@ -95,7 +105,6 @@ class UserDataModel {
     };
   }
 }
-
 
 class GamePlayedStats {
   int wins;

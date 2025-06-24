@@ -71,7 +71,7 @@ class FaceUpCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5.0),
       width: width * 0.2 - 30,
-      height: width * 0.3 - 35,
+      height: height * 0.3 - 35,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
           color: Colors.white, borderRadius: BorderRadius.circular(12)),
@@ -151,7 +151,7 @@ Widget chip(double width, int value,BuildContext context) {
 
 Widget playerButton(double width, Icon displayIcon, Color color) {
   return Container(
-    width: width * 0.2,
+    width: width * 0.15,
     height: width * 0.2,
     child: Center(
       child: Container(

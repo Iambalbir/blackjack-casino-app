@@ -35,14 +35,21 @@ Future<bool> showLosingDialog(BuildContext context) async {
                       Navigator.pop(dialogContext, true);
                     },
                     child: Text("OK"),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius_5),
+                      ),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(dialogContext, true); // ✅ Rebet
-                      // ✅ Rebet
+                      Navigator.pop(dialogContext, true);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius_5),
+                      ),
                     ),
                     child: Text("Rebet"),
                   ),

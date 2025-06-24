@@ -131,7 +131,8 @@ class TextFieldWidget extends StatelessWidget {
           textInputAction: inputAction,
           onFieldSubmitted: onFieldSubmitted,
           validator: validate,
-          style: textStyleBodyMedium(context),
+          style: textStyleBodyMedium(context)
+              .copyWith(fontSize: font_15, color: textColor),
           decoration: inputDecoration(context) ?? decoration,
         )
       ],
@@ -143,7 +144,9 @@ class TextFieldWidget extends StatelessWidget {
       errorMaxLines: 2,
       suffixIconConstraints:
           BoxConstraints(minHeight: height ?? height_20, minWidth: width_25),
-      errorStyle: textStyleBodySmall(context),
+      errorStyle: textStyleBodySmall(context)
+          .copyWith(fontSize: font_8)
+          .copyWith(color: Colors.red),
       isDense: true,
       filled: true,
       contentPadding: contentPadding ?? EdgeInsets.all(margin_12),
@@ -155,7 +158,7 @@ class TextFieldWidget extends StatelessWidget {
               color: Colors.grey,
               fontSize: font_12,
               fontWeight: FontWeight.w500),
-      fillColor: bgColor ?? Colors.white,
+      fillColor: bgColor ?? Colors.grey.shade100,
       border: decoration ??
           DecoratedInputBorder(
             child: OutlineInputBorder(

@@ -47,6 +47,11 @@ class CreateRoomBloc extends Bloc<RoomEvents, RoomState> {
     if (state.selectedUsers.isEmpty) {
       showToast("Select at least 1 user to create a room.");
       return;
+    } else {
+      if (state.selectedUsers.length > 4) {
+        showToast("You can invite max 4 users.");
+        return;
+      }
     }
 
     emit(state.copyWith(isCreatingRoom: true));
@@ -60,12 +65,15 @@ class CreateRoomBloc extends Bloc<RoomEvents, RoomState> {
           'email': currentUserModel.email,
         },
         'game': 'Blackjack',
-        'invitedUsers': state.selectedUsers,
-        'createdAt': FieldValue.serverTimestamp(),
+        'type': 'private',
+        'entryFee': event.entryFee,
+        'groupName': event.groupName,
+        playersListing: state.selectedUsers,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
         'status': 'waiting', // could be waiting / active / finished
       };
 
-      await apiRepository
+      await firebaseRepository
           .createPrivateRoomTrigger(requestModel)
           .then((value) async {
         if (value != null) {
@@ -82,12 +90,16 @@ class CreateRoomBloc extends Bloc<RoomEvents, RoomState> {
                 'email': user['email'],
               },
               'roomCode': value,
+              'entryFee': event.entryFee,
+              'groupName': event.groupName,
               'game': 'Blackjack',
+              'type': 'private',
+              'roomType': TYPE_MULTI_PLAYER,
               'time': DateTime.now().toIso8601String(),
               'status': 'pending',
-              'createdAt': FieldValue.serverTimestamp(),
+              'createdAt': DateTime.now().millisecondsSinceEpoch,
             };
-            await apiRepository.addInvitationData(invitationData);
+            await firebaseRepository.addInvitationData(invitationData);
             emit(state.copyWith(
               isCreatingRoom: false,
               roomCode: value,

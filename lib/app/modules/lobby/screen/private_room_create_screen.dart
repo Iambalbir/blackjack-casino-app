@@ -8,10 +8,16 @@ class CreatePrivateRoomView extends StatefulWidget {
 
 class _CreateRoomWithUserSelectionScreenState
     extends State<CreatePrivateRoomView> {
+  late final CreateRoomBloc _bloc;
+  TextEditingController entryFeeController = TextEditingController();
+  TextEditingController groupNameTextController = TextEditingController();
+  final GlobalKey<FormState> globalKey = GlobalKey();
+
   @override
-  void initState() {
+  void didChangeDependencies() {
+    _bloc = context.read<CreateRoomBloc>();
     context.read<CreateRoomBloc>().add(InitialEvent());
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
@@ -20,7 +26,8 @@ class _CreateRoomWithUserSelectionScreenState
     return BlocConsumer<CreateRoomBloc, RoomState>(
       listener: (context, state) {
         if (state.roomCode != '' && !state.isCreatingRoom) {
-          Navigator.pushNamed(context, RouteName.waitingRoomScreenRoute,
+          Navigator.pushReplacementNamed(
+              context, RouteName.waitingRoomScreenRoute,
               arguments: {"roomCode": state.roomCode});
         }
       },
@@ -28,7 +35,7 @@ class _CreateRoomWithUserSelectionScreenState
         return Scaffold(
           appBar: AppBar(
               title: TextView(
-            text: 'Create Private Room',
+            text: 'Private Room',
             textStyle: textStyleHeadingMedium(context),
           )),
           body: state.allUsers.isEmpty && state.isLoading == true
@@ -44,11 +51,49 @@ class _CreateRoomWithUserSelectionScreenState
                       child: Column(
                         children: [
                           TextView(
-                            text: 'Select players to invite (max 5)',
+                            text: 'Select players to invite (max 4)',
                             textStyle: textStyleBodyMedium(context)
                                 .copyWith(fontWeight: FontWeight.w500),
                           ),
                           SizedBox(height: 10),
+                          Form(
+                            key: globalKey,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: margin_10),
+                                  child: TextFieldWidget(
+                                    textController: groupNameTextController,
+                                    radius: radius_5,
+                                    validate: (value) =>
+                                        FieldChecker.fieldChecker(
+                                            value, "Public Group Name"),
+                                    readOnly: false,
+                                    hint: "Group Name",
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(vertical: margin_10),
+                                  child: TextFieldWidget(
+                                    textController: entryFeeController,
+                                    // Add this controller in your state
+                                    radius: radius_5,
+                                    inputType: TextInputType.numberWithOptions(
+                                        decimal: true, signed: false),
+                                    inputFormatter: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    validate: (value) =>
+                                        FieldChecker.entryFeeValidator(value),
+                                    // Add appropriate validation
+                                    readOnly: false,
+                                    hint: "Entry Fee",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           TextField(
                             decoration: InputDecoration(
                               hintText: 'Search nicknames...',
@@ -97,8 +142,12 @@ class _CreateRoomWithUserSelectionScreenState
                           SizedBox(height: 12),
                           ElevatedButton.icon(
                             onPressed: () {
-                              if (state.selectedUsers.isNotEmpty) {
-                                roomBloc.add(CreateRoomEvent());
+                              if (globalKey.currentState!.validate()) {
+                                if (state.selectedUsers.isNotEmpty) {
+                                  roomBloc.add(CreateRoomEvent(
+                                      groupName: groupNameTextController.text,
+                                      entryFee: entryFeeController.text));
+                                }
                               }
                             },
                             icon: Icon(Icons.meeting_room),
@@ -116,5 +165,12 @@ class _CreateRoomWithUserSelectionScreenState
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    print('private room  bloc disposed');
+    _bloc.close();
+    super.dispose();
   }
 }

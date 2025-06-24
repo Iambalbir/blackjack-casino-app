@@ -5,7 +5,6 @@ description: A new Flutter project.
 
 publish_to: 'none'
 
-
 version: 1.0.0+1
 
 environment:
@@ -21,7 +20,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   firebase_crashlytics:
-  connectivity_plus:
+  connectivity_plus: ^5.0.1
   equatable:
   flutter_screenutil:
   fluttertoast:
@@ -31,6 +30,13 @@ dependencies:
   shared_preferences:
   device_preview:
   intl:
+  loading_animation_widget:
+  audioplayers:
+  confetti:
+  flutter_dotenv:
+  flutter_stripe:
+  stripe_platform_interface:
+  http:
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,6 +53,13 @@ flutter:
   
   assets:
     - assets/icons/
+    - assets/sounds/
+    - assets/.env
+
+  fonts:
+    - family: "luck"
+      fonts:
+        - asset: assets/fonts/LuckiestGuy-Regular.ttf
 
   
   

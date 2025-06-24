@@ -1,9 +1,12 @@
+import 'package:app/export_file.dart';
+
 abstract class InvitationEvents {}
 
 class AcceptInvitationEvent extends InvitationEvents {
   final Map<String, dynamic> invite;
+  BuildContext context;
 
-  AcceptInvitationEvent(this.invite);
+  AcceptInvitationEvent(this.invite, this.context);
 }
 
 class DeclineInvitationEvent extends InvitationEvents {
@@ -12,4 +15,8 @@ class DeclineInvitationEvent extends InvitationEvents {
   DeclineInvitationEvent(this.invite);
 }
 
-class LoadInvitationsEvent extends InvitationEvents {}
+class LoadInvitationsEvent extends InvitationEvents {
+  dynamic isAcceptedInvites;
+
+  LoadInvitationsEvent({this.isAcceptedInvites = false});
+}

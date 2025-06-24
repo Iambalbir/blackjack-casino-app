@@ -1,41 +1,84 @@
-import 'package:app/app/modules/games/screens/multiplayer_screen.dart';
+import 'package:app/app/modules/internet_check/view/no_internet_screen.dart';
+import 'package:app/app/modules/main/main_bloc/main_bloc.dart';
+import 'package:app/app/modules/main/main_bloc/main_events.dart';
+import 'package:app/app/modules/main/main_bloc/main_state.dart';
 
 import '../../../../export_file.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("🎰 Gambling Hub"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              "Main Menu",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: height_20),
+    return BlocConsumer<MainScreenBloc, MainScreenStates>(
+      listener: (context, state) {
+        if (!state.isLoading && state.isRoomCreated && state.roomCode != '') {
+          final List<Map<String, dynamic>> playerList = [
+            state.host,
+          ];
+          Navigator.pushNamed(
+            context,
+            RouteName.multiPlayerBlackJackScreenRoute,
+            arguments: {
+              "roomCode": state.roomCode,
+              "players": playerList,
+              "isGameActiveStatus": false,
+              "type": "private",
+              "roomType": TYPE_SINGLE_PLAYER
+            },
+          );
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: Container(
+            padding: EdgeInsets.all(margin_15),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [kBackground, Colors.grey],
+                    begin: Alignment.topRight)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: height_40,
+                ),
+                TextView(
+                  text: "🎰 GAMING HUB",
+                  textStyle: textStyleHeadingMedium(context)
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
 
-            // Play Games Section
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _gameTile(context, "Blackjack", Icons.sports_esports, () {
-                    showGameModeDialog(context, (mode) {
+                SizedBox(height: height_20),
+
+                // Play Games Section
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: [
+                      _gameTile(context, "Blackjack ♠️", Icons.sports_esports,
+                          () {
+                        context
+                            .read<MainScreenBloc>()
+                            .add(CreateSinglePlayerRoomEvent(context));
+
+                        ///previous game flow
+                        /* Navigator.of(context).pushNamed(
+                      RouteName.playBlackJackScreenRoute,
+                    );*/
+
+                        ///commented for the testing single player lobby section
+                        /* showGameModeDialog(context, (mode) {
                       if (mode == TYPE_SINGLE) {
                         Navigator.of(context).pushNamed(
                           RouteName.playBlackJackScreenRoute,
@@ -44,104 +87,103 @@ class MainScreen extends StatelessWidget {
                         Navigator.pushNamed(
                             context, RouteName.playersLobbyScreenRoute);
                       }
-                    });
-                  }),
-                  _gameTile(context, "Slots", Icons.casino, () {
-                    showBetDialog(context, 0, (amount) {
-                      Navigator.pop(context);
+                    });*/ //changed to testing only
+                      }),
+                      _gameTile(context, "Slots 🎰", Icons.casino, () {
+                        showBetDialog(context, 0, (amount) {
+                          Navigator.pop(context);
 
+                          Navigator.pushNamed(
+                              context, RouteName.playSlotMachineScreenRoute,
+                              arguments: {"amount": amount});
+                        });
+                      }),
+                      _gameTile(context, "POKER 🃏", Icons.emoji_events, () {
+                        Navigator.of(context).pushNamed(
+                            RouteName.pokerGamePlayScreen,
+                            arguments: {"players": []});
+                      }),
+                      _gameTile(context, "Multiplayer Lobby", Icons.group, () {
+                        Navigator.of(context)
+                            .pushNamed(RouteName.publicLobbyListingScreenRoute);
+                      }),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: height_20),
+                Center(
+                  child: InkWell(
+                    onTap: () {
                       Navigator.pushNamed(
-                          context, RouteName.playSlotMachineScreenRoute,
-                          arguments: {"amount": amount});
-                    });
-                  }),
-                  _gameTile(context, "Poker", Icons.emoji_events, () {
-                    Navigator.of(context).pushNamed('/pokerModeSelector');
-                  }),
-                  _gameTile(context, "Multiplayer Lobby", Icons.group, () {
-                    Navigator.of(context).pushNamed('/multiplayerLobby');
-                  }),
-                ],
-              ),
-            ),
-
-            SizedBox(height: height_20),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('rooms')
-                  .where("status", isEqualTo: "active")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final activeGames = snapshot.data?.docs ?? [];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context, RouteName.activeGamesScreenRoute);
-                      },
-                      child: TextView(
-                        text:
-                            '🎮 ${activeGames.length} Active Game${activeGames.length == 1 ? '' : 's'}',
-                        textStyle: textStyleBodyMedium(context).copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                          context, RouteName.activeGamesScreenRoute);
+                    },
+                    child: TextView(
+                      text: '🎮 Active Games',
+                      textStyle: textStyleBodyMedium(context).copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                  ),
+                ),
+                SizedBox(height: height_10),
+                // Other Options
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _bottomOptionTile(context, "Leaderboard", Icons.leaderboard,
+                        RouteName.leaderBoardScreenRoute),
+                    _bottomOptionTile(context, "Settings", Icons.settings,
+                        RouteName.settingsScreenRoute),
+                    _bottomOptionTile(
+                        context,
+                        "Wallet",
+                        Icons.account_balance_wallet,
+                        RouteName.walletScreenRoute),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection("invitations")
+                            .where("to.uid", isEqualTo: currentUserModel.uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          dynamic invitationsListing;
+                          invitationsListing = snapshot.data?.docs ?? [];
+
+                          return _bottomOptionTile(
+                              context,
+                              "Invitations",
+                              Icons.mail_outline,
+                              RouteName.invitationScreenRoute,
+                              countIcon: invitationsListing.length == 0
+                                  ? SizedBox()
+                                  : Container(
+                                      margin: EdgeInsets.only(bottom: margin_9),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: kBackground,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(margin_4),
+                                        child: TextView(
+                                            text:
+                                                "${invitationsListing.length}",
+                                            textStyle:
+                                                textStyleBodyMedium(context)
+                                                    .copyWith(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                      ),
+                                    ));
+                        }),
                   ],
-                );
-              },
-            ),
-
-            // Other Options
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _bottomOptionTile(context, "Leaderboard", Icons.leaderboard,
-                    RouteName.leaderBoardScreenRoute),
-                _bottomOptionTile(context, "Settings", Icons.settings,
-                    RouteName.settingsScreenRoute),
-                _bottomOptionTile(context, "Wallet",
-                    Icons.account_balance_wallet, RouteName.walletScreenRoute),
-                StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("invitations")
-                        .where("to.uid", isEqualTo: currentUserModel.uid)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      dynamic invitationsListing = snapshot.data?.docs ?? [];
-
-                      return _bottomOptionTile(context, "Invitations",
-                          Icons.mail_outline, RouteName.invitationScreenRoute,
-                          countIcon: invitationsListing.length == 0
-                              ? SizedBox()
-                              : Container(
-                                  margin: EdgeInsets.only(bottom: margin_9),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: kBackground,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(margin_4),
-                                    child: TextView(
-                                        text: "${invitationsListing.length}",
-                                        textStyle: textStyleBodyMedium(context)
-                                            .copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold)),
-                                  ),
-                                ));
-                    }),
+                ),
+                const SizedBox(height: 10),
               ],
             ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -184,7 +226,7 @@ class MainScreen extends StatelessWidget {
       {countIcon}) {
     return GestureDetector(
       onTap: () {
-        apiRepository.checkCurrentUser();
+        firebaseRepository.checkCurrentUser();
         Navigator.of(context).pushNamed(routeName);
       },
       child: Stack(

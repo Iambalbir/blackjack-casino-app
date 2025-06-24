@@ -10,6 +10,45 @@ class FieldChecker {
     return null;
   }
 
+  static String? entryFeeValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Entry fee cannot be empty";
+    }
+
+    final fee = double.tryParse(value);
+    if (fee == null) {
+      return "Entry fee must be a valid number";
+    }
+
+    if (fee < 20) {
+      return "Entry fee must be at least 20";
+    }
+
+    if (fee > 20000) {
+      return "Entry fee must not exceed 20,000";
+    }
+
+    // Check if the fee is an odd number
+    if (fee % 2 != 0) {
+      return "Entry fee must be an even number";
+    }
+
+    return null;
+  }
+
+  static String? validateMaxLengthChecker(String? value, String message) {
+    if (value == null || value.trim().isEmpty) {
+      return "$message cannot be empty";
+    }
+
+    final number = int.tryParse(value.trim());
+    if (number != null && number > 5) {
+      return "$message cannot be greater than 5";
+    }
+
+    return null;
+  }
+
   static String? dobChecker(
     String? value,
     String message,
@@ -148,14 +187,11 @@ class Validator {
     return null;
   }
 
-  static String? validateConfirmPasswordMatch(
-      {String? value, String? password}) {
+  static String? validateConfirmPasswordMatch({value, String? password}) {
     if (value!.isEmpty) {
       return strCPasswordEmpty;
     } else if (value != password) {
       return strPasswordMatc;
-    } else if (validateStrongPassword(value)) {
-      return resetPasswordDescription;
     }
     return null;
   }

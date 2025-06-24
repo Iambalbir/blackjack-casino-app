@@ -135,8 +135,11 @@ class SlotMachineGameScreen extends StatelessWidget {
                                 backgroundColor: Colors.orange,
                                 foregroundColor: Colors.white,
                               ),
-                              onPressed: () {
-                                bankAmount.value -= state.selectedBet ~/ 2;
+                              onPressed: () async {
+                                await firebaseRepository.updateUserCoins(
+                                    amount: "${state.selectedBet ~/ 2}",
+                                    userId: currentUserModel.uid);
+
                                 Navigator.of(context).pop(true);
                               },
                               child: Text("Exit Anyway"),
@@ -153,120 +156,171 @@ class SlotMachineGameScreen extends StatelessWidget {
             },
             child: Scaffold(
               backgroundColor: kBackground,
-              body: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(margin_10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: height_80,
-                      ),
-                      TextView(
-                          text: "SLOT MACHINE",
-                          textStyle: textStyleHeadingMedium(context).copyWith(
-                              color: Colors.amberAccent,
-                              fontWeight: FontWeight.bold)),
-                      SizedBox(height: height_30),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            color: Colors.greenAccent,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Container(
+              body: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(iconSlotBg), fit: BoxFit.cover)),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(margin_10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: height_50,
+                        ),
+                        state.resultMessage == WIN_MESSAGE
+                            ? SizedBox()
+                            : Container(
+                                padding: EdgeInsets.all(margin_5),
+                                decoration: BoxDecoration(
+                                    color: kBackground,
+                                    border: Border.all(color: kBackground),
+                                    borderRadius:
+                                        BorderRadius.circular(radius_5)),
+                                child: TextView(
+                                    text: "Bet Amount : \$${state.selectedBet}",
+                                    textStyle: textStyleBodyLarge(context)
+                                        .copyWith(color: Colors.white)),
+                              ),
+                        SizedBox(
+                          height: height_10,
+                        ),
+                        TextView(
+                            text: "SLOT MACHINE 🎰",
+                            textStyle: textStyleHeadingMedium(context).copyWith(
+                                color: Colors.amberAccent,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: height_30),
+                        Container(
+                          padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: Colors.grey.shade800, width: 2),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              3,
-                              (index) => _buildReel(
-                                  index, bloc.controllers[index], bloc.symbols),
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: Colors.grey.shade800, width: 2),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                3,
+                                (index) => _buildReel(index,
+                                    bloc.controllers[index], bloc.symbols),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      SizedBox(height: 10),
-                      state.selectedBet == 0
-                          ? SizedBox()
-                          : ElevatedButton(
-                              onPressed: state.isSpinning
-                                  ? null
-                                  : () => bloc
-                                      .add(SpinReelsEvent(state.selectedBet)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.greenAccent,
-                                foregroundColor: Colors.black,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                              ),
-                              child: TextView(
-                                text: state.isSpinning ? "Spinning..." : "SPIN",
-                                textStyle: textStyleBodyMedium(context),
-                              ),
-                            ),
-                      SizedBox(height: 20),
-                      state.selectedBet == 0
-                          ? InkWell(
-                              onTap: () {
-                                showBetDialog(context, 0, (amount) {
-                                  Navigator.pop(context);
-                                  context
-                                      .read<SlotMachineBloc>()
-                                      .add(UpdateBetAmount(amount));
-                                });
-                              },
-                              child: TextView(
-                                text: "REBET",
-                                textStyle: textStyleHeadingMedium(context)
-                                    .copyWith(color: Colors.black),
-                              ),
-                            )
-                          : SizedBox(),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          state.resultMessage == WIN_MESSAGE
-                              ? SizedBox()
-                              : Container(
-                                  padding: EdgeInsets.all(margin_5),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
+                        SizedBox(height: height_10),
+                        state.selectedBet == 0
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  {
+                                    showBetDialog(context, 0, (amount) {
+                                      Navigator.pop(context);
+                                      context
+                                          .read<SlotMachineBloc>()
+                                          .add(UpdateBetAmount(amount));
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: kBackground,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: margin_30,
+                                      vertical: margin_10),
+                                  shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(radius_5)),
-                                  child: TextView(
-                                      text:
-                                          "Bet Amount : \$${state.selectedBet}",
-                                      textStyle: textStyleBodyLarge(context)),
                                 ),
-                          InkWell(
-                            onTap: () {
-                              bloc.add(DoubleBetAmount(state.selectedBet));
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(margin_5),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius:
-                                      BorderRadius.circular(radius_5)),
-                              child: TextView(
-                                  text: "Double Bet",
-                                  textStyle: textStyleBodyLarge(context)
-                                      .copyWith(color: Colors.black)),
+                                child: TextView(
+                                  text: "REBET",
+                                  textStyle: textStyleBodyMedium(context)
+                                      .copyWith(color: Colors.white),
+                                ),
+                              )
+                            : SizedBox(),
+                        SizedBox(height: height_10),
+                        /*   Container(
+                          height: height_200,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.amber, width: 1),
+                          ),
+                          child: Scrollbar(
+                            thumbVisibility: true,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                slotRulesDescription,
+                                style: textStyleBodySmall(context).copyWith(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
                             ),
                           ),
-                        ],
-                      )
-                    ],
+                        ),*/
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            state.selectedBet == 0
+                                ? SizedBox()
+                                : ElevatedButton(
+                                    onPressed: state.isSpinning
+                                        ? null
+                                        : () => bloc.add(
+                                            SpinReelsEvent(state.selectedBet)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: kBackground,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: margin_30,
+                                          vertical: margin_10),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(radius_5)),
+                                    ),
+                                    child: TextView(
+                                      text: state.isSpinning
+                                          ? "Spinning..."
+                                          : "SPIN",
+                                      textStyle: textStyleBodyMedium(context)
+                                          .copyWith(color: Colors.white),
+                                    ),
+                                  ),
+                            SizedBox(
+                              width: state.selectedBet == 0 ? width_0 : width_8,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                bloc.add(DoubleBetAmount(state.selectedBet));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: margin_30, vertical: margin_10),
+                                decoration: BoxDecoration(
+                                    color: kBackground,
+                                    borderRadius:
+                                        BorderRadius.circular(radius_5)),
+                                child: TextView(
+                                    text: "Double Bet",
+                                    textStyle: textStyleBodyLarge(context)
+                                        .copyWith(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                      ],
+                    ),
                   ),
                 ),
               ),

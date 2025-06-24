@@ -1,3 +1,5 @@
+import 'package:app/core/utils/values/fade_transitions_builder.dart';
+
 import '../../../export_file.dart';
 
 class ThemeConfig {
@@ -18,9 +20,7 @@ class ThemeConfig {
       iconTheme: IconThemeData(
         color: textColor,
       ),
-
       appBarTheme: AppBarTheme(
-
         backgroundColor: isDark ? Colors.black : Colors.white,
         iconTheme: IconThemeData(color: textColor),
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -29,10 +29,12 @@ class ThemeConfig {
         ),
         elevation: 0,
       ),
-      pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-      },),
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.iOS: FadeTransitionBuilder(),
+          TargetPlatform.android: FadeTransitionBuilder(),
+        },
+      ),
       dividerTheme: DividerThemeData(
         thickness: 1,
         space: 1,
@@ -91,6 +93,7 @@ class ThemeConfig {
 
   static ThemeData get lightTheme => createTheme(
         brightness: Brightness.light,
+
       );
 
   static ThemeData get darkTheme => createTheme(

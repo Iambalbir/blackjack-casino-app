@@ -1,14 +1,35 @@
+import 'package:app/core/utils/dialogs/remove_user_dialog.dart';
+
 import '../../../../export_file.dart';
 
-class WaitingRoomScreen extends StatelessWidget {
+class WaitingRoomScreen extends StatefulWidget {
   final Map<String, dynamic> mapData;
 
   const WaitingRoomScreen({super.key, required this.mapData});
 
   @override
+  State<WaitingRoomScreen> createState() => _WaitingRoomScreenState();
+}
+
+class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
+  late final WaitingRoomBloc _bloc;
+
+  @override
+  void didChangeDependencies() {
+    _bloc = context.read<WaitingRoomBloc>();
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _bloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bloc = context.read<WaitingRoomBloc>();
-    final roomCode = mapData['roomCode'];
+    final roomCode = widget.mapData['roomCode'];
     bloc.add(InitialWaitingRoomEvent(roomCode));
 
     return BlocConsumer<WaitingRoomBloc, WaitingRoomState>(
@@ -23,17 +44,16 @@ class WaitingRoomScreen extends StatelessWidget {
           ),
           body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('rooms')
+                .collection(roomCollectionPath)
                 .doc(roomCode)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
-
               final data = snapshot.data!.data() as Map<String, dynamic>;
               final invitedUsers =
-                  List<Map<String, dynamic>>.from(data['invitedUsers'] ?? []);
+                  List<Map<String, dynamic>>.from(data[playersListing] ?? []);
               final host = data['host'];
               final List<Map<String, dynamic>> playerList = [
                 host,
@@ -47,7 +67,9 @@ class WaitingRoomScreen extends StatelessWidget {
                     arguments: {
                       "roomCode": roomCode,
                       "players": playerList,
-                      "isGameActiveStatus": mapData['isGameActiveStatus']
+                      "isGameActiveStatus":
+                          widget.mapData['isGameActiveStatus'],
+                      "type": data['type']
                     },
                   );
                 });
@@ -121,7 +143,49 @@ class WaitingRoomScreen extends StatelessWidget {
                               text: user['email'] ?? '',
                               textStyle: textStyleBodySmall(context),
                             ),
-                            trailing: Icon(statusIcon, color: iconColor),
+                            trailing: data['type'] == 'public'
+                                ? SizedBox()
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(statusIcon, color: iconColor),
+                                      status == "accepted"
+                                          ? SizedBox()
+                                          : InkWell(
+                                              onTap: () async {
+                                                final shouldRemove =
+                                                    await showRemoveUserDialog(
+                                                        context,
+                                                        user['nickname'] ?? '');
+                                                if (shouldRemove == true) {
+                                                  if (invitedUsers.length > 1) {
+                                                    context
+                                                        .read<WaitingRoomBloc>()
+                                                        .add(RemoveUserEvent(
+                                                            user['uid']));
+
+                                                    showToast(
+                                                        '${user['nickname']} has been removed from the waiting room.');
+                                                  } else {
+                                                    showToast(
+                                                        "You are not allowed to perform this action.At least one player is required");
+                                                  }
+                                                }
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      left: margin_3),
+                                                  padding:
+                                                      EdgeInsets.all(margin_1),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      shape: BoxShape.circle),
+                                                  child: Icon(Icons.close,
+                                                      color: Colors.white)),
+                                            ),
+                                    ],
+                                  ),
                           ),
                         );
                       },
@@ -141,15 +205,58 @@ class WaitingRoomScreen extends StatelessWidget {
                             onPressed: () async {
                               if (allAccepted) {
                                 final roomRef = FirebaseFirestore.instance
-                                    .collection('rooms')
+                                    .collection(roomCollectionPath)
                                     .doc(roomCode);
+                                final roomSnapshot = await roomRef.get();
+                                final roomData = roomSnapshot.data();
 
-                                await roomRef.update({
-                                  'status': 'active',
-                                  'currentTurn': host['uid'],
-                                  'turnStartTime': FieldValue.serverTimestamp(),
-                                  'turnId': 1,
-                                });
+                                if (roomData != null) {
+                                  // Step 1: Retrieve the host's bet amount
+                                  final hostBetAmount =
+                                      roomData['entryFee'] ?? 0;
+
+                                  if (int.parse(bankAmount.value.toString()) <
+                                      int.parse(hostBetAmount.toString())) {
+                                    showToast(
+                                        'Host has insufficient balance to start the game');
+                                    return;
+                                  }
+                                  await firebaseRepository.updateUserCoins(
+                                      userId: host['uid'],
+                                      amount: hostBetAmount);
+
+                                  await roomRef.update({
+                                    'host': {
+                                      'uid': host['uid'],
+                                      'nickname': host['nickname'],
+                                      'email': host['email'],
+                                      'betAmount': hostBetAmount,
+                                    },
+                                  });
+
+                                  // Step 5: Update the room status to active
+                                  await roomRef.update({
+                                    'status': 'active',
+                                    'currentTurn': host['uid'],
+                                    'turnStartTime':
+                                        DateTime.now().millisecondsSinceEpoch,
+                                    'turnId': 1,
+                                  });
+
+                                  final invitationsRef = FirebaseFirestore
+                                      .instance
+                                      .collection('invitations');
+                                  final batch =
+                                      FirebaseFirestore.instance.batch();
+                                  final querySnapshot = await invitationsRef
+                                      .where('roomCode', isEqualTo: roomCode)
+                                      .get();
+                                  for (final doc in querySnapshot.docs) {
+                                    batch.delete(doc.reference);
+                                  }
+
+                                  await batch.commit();
+                                }
                               }
                             },
                             child: TextView(

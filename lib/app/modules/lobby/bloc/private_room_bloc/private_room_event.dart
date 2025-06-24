@@ -8,7 +8,12 @@ class FilterUserEvent extends RoomEvents {
   FilterUserEvent(this.query);
 }
 
-class CreateRoomEvent extends RoomEvents {}
+class CreateRoomEvent extends RoomEvents {
+  dynamic entryFee;
+  dynamic groupName;
+
+  CreateRoomEvent({this.entryFee, this.groupName});
+}
 
 class ToggleUserEvent extends RoomEvents {
   final Map<String, dynamic> user;

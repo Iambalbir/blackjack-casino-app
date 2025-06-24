@@ -119,7 +119,7 @@ class SlotMachineBloc extends Bloc<SlotMachineEvent, SlotMachineState> {
     required bool isWin,
     required int coinsChange,
   }) async {
-    await apiRepository.saveGameSession(
+    await firebaseRepository.saveGameSession(
       userId: currentUserModel.uid,
       nickname: currentUserModel.nickname,
       gameType: TYPE_SLOT_MACHINE,

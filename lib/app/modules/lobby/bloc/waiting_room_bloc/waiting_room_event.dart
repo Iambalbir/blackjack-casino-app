@@ -5,3 +5,9 @@ class InitialWaitingRoomEvent extends WaitingRoomEvents {
 
   InitialWaitingRoomEvent(this.roomCode);
 }
+
+class RemoveUserEvent extends WaitingRoomEvents {
+  dynamic userId;
+
+  RemoveUserEvent(this.userId);
+}

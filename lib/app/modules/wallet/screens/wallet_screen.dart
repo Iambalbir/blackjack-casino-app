@@ -32,39 +32,49 @@ class WalletScreen extends StatelessWidget {
   }
 
   Widget _buildChipBalance(context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [kBackground, Colors.white],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.greenAccent, width: 2),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.account_balance_wallet_rounded,
-              color: Colors.amberAccent, size: 40),
-          SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Chip Balance",
-                  style: TextStyle(color: Colors.white70, fontSize: 16)),
-              Text(
-                "\$$chipBalance",
-                style: textStyleHeadingMedium(context).copyWith(
-                    color: Colors.black,
-                    fontSize: font_30,
-                    fontWeight: FontWeight.bold),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .doc(currentUserModel.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          dynamic data;
+          if (snapshot.data != null) {
+            data = snapshot.data!.data() as Map<String, dynamic>;
+            bankAmount.value = data['coins'];
+          }
+          return Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [kBackground, Colors.white],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
-          ),
-        ],
-      ),
-    );
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.greenAccent, width: 2),
+            ),
+            child: Row(
+              children: [
+                TextView(
+                    text: "🪙", textStyle: textStyleHeadlineLarge(context)),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Coins Balance",
+                        style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    Text(
+                      "${bankAmount.value}",
+                      style: textStyleHeadingMedium(context).copyWith(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _buildTransactionHeader() {
@@ -121,9 +131,10 @@ class WalletScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _walletButton(context, "Deposit", Icons.add_circle, Colors.greenAccent),
         _walletButton(
-            context, "Withdraw", Icons.remove_circle, Colors.redAccent),
+            context, "Add Coins", Icons.add_circle, Colors.greenAccent),
+/*        _walletButton(
+            context, "Withdraw", Icons.remove_circle, Colors.redAccent),*/
       ],
     );
   }
@@ -132,7 +143,7 @@ class WalletScreen extends StatelessWidget {
       BuildContext context, String label, IconData icon, Color color) {
     return ElevatedButton.icon(
       onPressed: () {
-        // TODO: Open deposit/withdraw dialog
+        Navigator.pushNamed(context, RouteName.addCoinsScreenRoute);
       },
       icon: Icon(icon, color: Colors.black),
       label: Text(label, style: TextStyle(color: Colors.black)),

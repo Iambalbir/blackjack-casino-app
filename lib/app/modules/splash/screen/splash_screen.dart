@@ -1,7 +1,4 @@
-import 'package:app/core/utils/assets/image_assets.dart';
-import 'package:app/core/utils/widgets/asset_image.dart';
 import 'package:app/export_file.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final splashBloc = BlocProvider.of<SplashBloc>(context);
     splashBloc.add(FadeInEvent());
+
     return Scaffold(
       body: BlocConsumer<SplashBloc, SplashState>(
         bloc: splashBloc,

@@ -1,4 +1,3 @@
-
 import '../../../export_file.dart';
 
 class BlocProviders {
@@ -8,9 +7,10 @@ class BlocProviders {
     BlocProvider(create: (_) => SplashBloc()),
     BlocProvider(create: (_) => SlotMachineBloc()),
     BlocProvider(create: (_) => SettingsBloc(prefs)),
-    BlocProvider(create: (_) => CreateRoomBloc()),
-    BlocProvider(create: (_) => WaitingRoomBloc()),
     BlocProvider(create: (_) => InvitationBloc()),
-    BlocProvider(create: (_) => MultiPlayerBlackjackBloc()),
+    BlocProvider(create: (_) => PublicRoomBloc()),
+    BlocProvider(create: (_) => MainScreenBloc()),
+    BlocProvider(create: (_) => NoInternetBloc()),
+    BlocProvider(create: (_) => RegisterBloc())
   ];
 }

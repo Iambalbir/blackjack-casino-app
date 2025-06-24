@@ -1,12 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:app/export_file.dart';
 
 class LeaderboardDialog extends StatelessWidget {
-  final Map<String, String> playerResults; // uid -> result like "win", "lose", "bust", "push"
-  final Map<dynamic, dynamic> playerNames; // uid -> player display name (optional)
+  final Map<String, dynamic>
+      playerResults; // uid -> result like "win", "lose", "bust", "push"
+  final Map<dynamic, dynamic>
+      playerNames; // uid -> player display name (optional)
+  final Map<String, dynamic> playerPayouts;
+  dynamic onCloseTap; // uid -> payout amount
 
   LeaderboardDialog({
     required this.playerResults,
     required this.playerNames,
+    this.onCloseTap,
+    required this.playerPayouts,
   });
 
   Color _getResultColor(String result) {
@@ -52,6 +58,8 @@ class LeaderboardDialog extends StatelessWidget {
             final uid = playerResults.keys.elementAt(index);
             final result = playerResults[uid] ?? 'unknown';
             final playerName = playerNames[uid] ?? uid;
+            final payout =
+                playerPayouts[uid] ?? 0.0; // Get payout, default to 0.0
 
             return ListTile(
               leading: Icon(
@@ -59,12 +67,27 @@ class LeaderboardDialog extends StatelessWidget {
                 color: _getResultColor(result),
               ),
               title: Text(playerName),
-              trailing: Text(
-                result.toUpperCase(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: _getResultColor(result),
-                ),
+              trailing: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    result.toUpperCase(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: _getResultColor(result),
+                    ),
+                  ),
+                  uid == "dealer" || result == "lose"
+                      ? SizedBox()
+                      : Text(
+                          '\$${payout.toStringAsFixed(2)}', // Display payout
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue, // Or any color you prefer
+                          ),
+                        ),
+                ],
               ),
             );
           },
@@ -72,7 +95,9 @@ class LeaderboardDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: onCloseTap ??
+              () => Navigator.pushNamedAndRemoveUntil(
+                  context, RouteName.streamUserStateScreenRoute, (v) => false),
           child: const Text('Close'),
         ),
       ],
